@@ -21,3 +21,35 @@ exports.addOrder = (req, res, next) => {
 
   res.status(200).send(order);
 };
+
+// orders/:id
+exports.getOrder = (req, res, next) => {
+  const { id } = req.params;
+  const record = db
+    .get("orders")
+    .find({ id })
+    .value(); // inside find({ id: id }) first id is the key, second id is the value that comes from const { id } = req.params;... So if the name of the key and the name of the parameter is the same, you can use one of them like find({ id })
+
+  res.status(200).send(record);
+};
+
+exports.deleteOrder = (req, res, next) => {
+  const { id } = req.params;
+  const record = db
+    .get("orders")
+    .remove({ id })
+    .write();
+  res.status(200).send(record);
+};
+
+exports.updateOrder = (req, res, next) => {
+  const { id } = req.params;
+  const data = req.body;
+
+  const record = db
+    .get("orders")
+    .find({ id })
+    .assign(data)
+    .write();
+  res.status(200).send(record);
+};
