@@ -25,7 +25,7 @@ exports.addUser = (req, res, next) => {
 
 // users/:id
 exports.getUser = (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params; // req.params contains route parameters like /orders, /records,/users (in the path portion of the URL)
   const record = db
     .get("users")
     .find({ id })

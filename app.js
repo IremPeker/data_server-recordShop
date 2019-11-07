@@ -32,7 +32,7 @@ db.defaults({ records: [], users: [], orders: [] }).write();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(setCors);
+app.use(setCors); // this one is inside the security.js file
 
 // Static Files
 app.use(express.static(path.join(__dirname, "public")));
@@ -42,5 +42,22 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/records", recordsRouter);
 app.use("/orders", ordersRouter);
+
+// Error Handling
+// this error handling is only for the routers, if path name is written wrong, below error message will appear
+app.use(function(req, res, next) {
+  const err = new Error(`Looks like something is broken!`);
+
+  next(err);
+});
+
+// in the below error message, the reason to put error and message inside different objects is that from the frontend this object is accessible with res.data.error
+app.use(function(err, req, res, next) {
+  res.status(400).send({
+    error: {
+      message: err.message
+    }
+  });
+});
 
 module.exports = app;

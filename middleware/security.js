@@ -5,5 +5,5 @@ exports.setCors = (req, res, next) => {
     "Origin, x-Requested-With, Content-Type, Accept"
   );
   res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-  next();
+  next(); // if you dont add next, it doesn't continue and stops here
 };
