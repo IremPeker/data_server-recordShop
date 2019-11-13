@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const low = require("lowdb");
 const FileSync = require("lowdb/adapters/FileSync");
+const mongoose = require("mongoose");
 
 // Routers
 const indexRouter = require("./routes/index");
@@ -21,6 +22,20 @@ const app = express();
 
 // Logs
 app.use(logger("dev"));
+
+// Connect To MONGO
+mongoose.connect("mongodb://localhost:27017/record-shop", {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true
+});
+mongoose.connection.on(
+  "error",
+  console.error.bind(console, "connection error")
+);
+mongoose.connection.on("open", () => {
+  console.log(`Connected to the database`);
+});
 
 // Setup LOWDB
 
