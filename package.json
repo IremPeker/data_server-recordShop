@@ -3,12 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "DEBUG=record_shop_exercise:* nodemon --inspect ./bin/www --ignore 'data/*' "
+    "start": "DEBUG=record_shop_exercise:* nodemon --inspect ./bin/www --ignore 'data/*' ",
+    "seed": "node seed/seed_db.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "faker": "^4.1.0",
     "lowdb": "^1.0.0",
     "mongoose": "^5.7.10",
     "morgan": "~1.9.1"
