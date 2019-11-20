@@ -35,6 +35,13 @@
     },
     {
       "id": "1573044393053"
+    },
+    {
+      "title": "Jesus Is King",
+      "artist": "Kanye West",
+      "price": 8.99,
+      "year": 2019,
+      "id": "1573753357296"
     }
   ],
   "users": [
@@ -64,6 +71,42 @@
       "userName": "irem",
       "birthday": 2019,
       "email": "jksödfkjöfk@kjsfödfs.com"
+    },
+    {
+      "id": "1574241053787",
+      "firstName": "Irem",
+      "lastName": "Peker",
+      "userName": "irem",
+      "birthday": 2019,
+      "email": "jksödfkjöfk@kjsfödfs.com",
+      "password": 123
+    },
+    {
+      "id": "1574241067315",
+      "firstName": "Irem",
+      "lastName": "Peker",
+      "userName": "irem",
+      "birthday": 2019,
+      "email": "jksödfkjöfk@kjsfödfs.com",
+      "password": 123
+    },
+    {
+      "id": "1574242333336",
+      "firstName": "Irem",
+      "lastName": "Peker",
+      "userName": "irem",
+      "birthday": 2019,
+      "email": "jksödfkjöfk@kjsfödfs.com",
+      "password": 123
+    },
+    {
+      "id": "1574242448951",
+      "firstName": "Irem",
+      "lastName": "Peker",
+      "userName": "irem",
+      "birthday": 2019,
+      "email": "jksödfkjöfk@kjsfödfs.com",
+      "password": 123
     }
   ],
   "orders": [

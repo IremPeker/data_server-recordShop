@@ -21,10 +21,11 @@ const { setCors } = require("./middleware/security");
 const app = express();
 
 // Logs
+// this is to see the errors in developer tool
 app.use(logger("dev"));
 
 // Connect To MONGO
-mongoose.connect("mongodb://localhost:27017/record-shop", {
+mongoose.connect("mongodb://localhost:27017/live-coding-ds", {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true
@@ -37,7 +38,7 @@ mongoose.connection.on("open", () => {
   console.log(`Connected to the database`);
 });
 
-// Setup LOWDB
+// Setup LOWDB (AFTER YOU ADD MONGOOSE FOR RECORDS AND ORDERS YOU CAN DELETE THIS ONE)
 
 const adapter = new FileSync("data/db.json");
 const db = low(adapter);

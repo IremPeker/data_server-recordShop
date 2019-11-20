@@ -1,56 +1,63 @@
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
-const adapter = new FileSync("data/db.json");
-const db = low(adapter);
 
-exports.getUsers = (req, res, next) => {
+/////////////////////////////////////////////
+const User=require("../models/User");
+const createError=require("http-errors");
+
+exports.getUsers = async (req, res, next) => {
   // if there is nothing else to run after this function you dont have to define next
-
-  const users = db.get("users").value();
-
+  // const users = db.get("users").value();
+  try {
+  const users = await User.find();
   res.status(200).send(users);
+  } catch (e) {
+    next(e);  // this next is to display the error message which is described in app.js Error Handling
+             // wherever it is called, next is used to connect the middleware functions
+             // in this case, after catching error, it will go to the next middleware function
+  }
+ 
 };
 
-exports.addUser = (req, res, next) => {
-  console.log(req.body);
-  const user = req.body;
-  db.get("users")
-    .push(user)
-    .last()
-    .assign({ id: Date.now().toString() })
-    .write();
+exports.addUser = async (req, res, next) => {
 
-  res.status(200).send(user);
+  try {
+     const user=new User(req.body);
+     await user.save();
+     res.status(200).send(user);
+  } catch (e) {
+    next(e);
+  }
 };
 
 // users/:id
-exports.getUser = (req, res, next) => {
-  const { id } = req.params; // req.params contains route parameters like /orders, /records,/users (in the path portion of the URL)
-  const record = db
-    .get("users")
-    .find({ id })
-    .value(); // inside find({ id: id }) first id is the key, second id is the value that comes from const { id } = req.params;... So if the name of the key and the name of the parameter is the same, you can use one of them like find({ id })
+exports.getUser = async(req, res, next) => {
+  try {
+     const { id } = req.params;
+     const user = await User.findById(id);
+     if(!user) throw new createError.NotFound();
+     res.status(200).send(user);
+  } catch (e) {
+    next(e);
+  }
 
-  res.status(200).send(record);
+ };
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+     const user = await User.findByIdAndDelete(req.params.id);  // if the user is found, delete
+     if(!user) throw new createError.NotFound();        // if the user is not found show an error
+     res.status(200).send(user);
+  } catch (e) {
+    next(e);
+  }
 };
 
-exports.deleteUser = (req, res, next) => {
-  const { id } = req.params;
-  const record = db
-    .get("users")
-    .remove({ id })
-    .write();
-  res.status(200).send(record);
-};
-
-exports.updateUser = (req, res, next) => {
-  const { id } = req.params;
-  const data = req.body;
-
-  const record = db
-    .get("users")
-    .find({ id })
-    .assign(data)
-    .write();
-  res.status(200).send(record);
+// https://mongoosejs.com/docs/api/model.html#model_Model.findByIdAndUpdate
+exports.updateUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body,{new:true});
+    if(!user) throw new createError.NotFound();        // if the user is not found show an error
+    res.status(200).send(user);
+  } catch (e) {
+     next(e);
+  }
 };
