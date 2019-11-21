@@ -1,61 +1,53 @@
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync");
-const adapter = new FileSync("data/db.json");
-const db = low(adapter);
-/////////////////////////////////////////////
-const Record=require("../models/Record");
-const createError=require("http-errors");
+const Record = require('../models/Record');
+const createError = require('http-errors');
 
-exports.getRecords = (req, res, next) => {
-  // if there is nothing else to run after this function you dont have to define next
-
-  const records = db.get("records").value();
-
-  res.status(200).send(records);
+exports.getRecords = async (req, res, next) => {
+  try {
+    const records = await Record.find();
+    res.status(200).send(records);
+  } catch (e) {
+    next(e);
+  }
 };
 
-exports.addRecord = (req, res, next) => {
-  console.log(req.body);
-  const record = req.body;
-  db.get("records")
-    .push(record)
-    .last()
-    .assign({ id: Date.now().toString() })
-    .write();
-
-  res.status(200).send(record);
+exports.getRecord = async (req, res, next) => {
+  try {
+    const record = await Record.findById(req.params.id);
+    if (!record) throw new createError.NotFound();
+    res.status(200).send(record);
+  } catch (e) {
+    next(e);
+  }
 };
 
-// records/:id
-exports.getRecord = (req, res, next) => {
-  const { id } = req.params;
-  const record = db
-    .get("records")
-    .find({ id })
-    .value(); // inside find({ id: id }) first id is the key, second id is the value that comes from const { id } = req.params;... So if the name of the key and the name of the parameter is the same, you can use one of them like find({ id })
-
-  res.status(200).send(record);
+exports.deleteRecord = async (req, res, next) => {
+  try {
+    const record = await Record.findByIdAndDelete(req.params.id);
+    if (!record) throw new createError.NotFound();
+    res.status(200).send(record);
+  } catch (e) {
+    next(e);
+  }
 };
 
-exports.deleteRecord = (req, res, next) => {
-  const { id } = req.params;
-  const record = db
-    .get("records")
-    .remove({ id })
-    .write();
-  res.status(200).send(record);
+exports.updateRecord = async (req, res, next) => {
+  try {
+    const record = await Record.findByIdAndUpdate(req.params.id, req.body, {
+      new: true
+    });
+    if (!record) throw new createError.NotFound();
+    res.status(200).send(record);
+  } catch (e) {
+    next(e);
+  }
 };
 
-exports.updateRecord = (req, res, next) => {
-  const { id } = req.params;
-  const data = req.body;
-
-  const record = db
-    .get("records")
-    .find({ id })
-    .assign(data)
-    .write();
-  res.status(200).send(record);
+exports.addRecord = async (req, res, next) => {
+  try {
+    const record = new Record(req.body);
+    await record.save();
+    res.status(200).send(record);
+  } catch (e) {
+    next(e);
+  }
 };
-
-// make get delete and post delete on postman

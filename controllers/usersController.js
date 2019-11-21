@@ -17,17 +17,6 @@ exports.getUsers = async (req, res, next) => {
  
 };
 
-exports.addUser = async (req, res, next) => {
-
-  try {
-     const user=new User(req.body);
-     await user.save();
-     res.status(200).send(user);
-  } catch (e) {
-    next(e);
-  }
-};
-
 // users/:id
 exports.getUser = async(req, res, next) => {
   try {
@@ -59,5 +48,18 @@ exports.updateUser = async (req, res, next) => {
     res.status(200).send(user);
   } catch (e) {
      next(e);
+  }
+};
+
+exports.addUser = async (req, res, next) => {
+
+  // SOMETHING WRONG HERE
+
+  try {
+    const user = new User(req.body);
+    await user.save();
+    res.status(200).send(user);
+  } catch (e) {
+    next(e);
   }
 };
