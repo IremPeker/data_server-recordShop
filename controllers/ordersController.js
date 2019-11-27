@@ -3,7 +3,7 @@ const createError = require('http-errors');
 
 exports.getOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().populate('records',' -__v');
     res.status(200).send(orders);
   } catch (e) {
     next(e);
@@ -12,7 +12,7 @@ exports.getOrders = async (req, res, next) => {
 
 exports.getOrder = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate("records"); // you can specify the fields you want to select, or if you dont want to select, put - infront of it
     if (!order) throw new createError.NotFound();
     res.status(200).send(order);
   } catch (e) {

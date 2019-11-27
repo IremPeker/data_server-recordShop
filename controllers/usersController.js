@@ -7,7 +7,10 @@ exports.getUsers = async (req, res, next) => {
   // if there is nothing else to run after this function you dont have to define next
   // const users = db.get("users").value();
   try {
-  const users = await User.find();
+  const users = await User.find().select('-password -_v').sort('-lastName').limit(5);  
+  // if you select like this, then the user doesnt see the password and the version
+  // you can sort the items
+  // you can choose a limit per page
   res.status(200).send(users);
   } catch (e) {
     next(e);  // this next is to display the error message which is described in app.js Error Handling
@@ -43,7 +46,7 @@ exports.deleteUser = async (req, res, next) => {
 // https://mongoosejs.com/docs/api/model.html#model_Model.findByIdAndUpdate
 exports.updateUser = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body,{new:true});
+    const user = await User.findByIdAndUpdate(req.params.id, req.body,{new:true, runValidators:true});
     if(!user) throw new createError.NotFound();        // if the user is not found show an error
     res.status(200).send(user);
   } catch (e) {
