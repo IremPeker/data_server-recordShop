@@ -1,9 +1,11 @@
+// REsource for populating nested objects: https://stackoverflow.com/questions/28179720/mongoose-populate-nested-array
+
 const Order = require('../models/Order');
 const createError = require('http-errors');
 
 exports.getOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find().populate('records',' -__v');
+    const orders = await Order.find().populate('records.record',' -__v');
     res.status(200).send(orders);
   } catch (e) {
     next(e);
@@ -12,7 +14,7 @@ exports.getOrders = async (req, res, next) => {
 
 exports.getOrder = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id).populate("records"); // you can specify the fields you want to select, or if you dont want to select, put - infront of it
+    const order = await Order.findById(req.params.id).populate("records.record").populate('user', 'userName fullName email'); // you can specify the fields you want to select, or if you dont want to select, put - infront of it
     if (!order) throw new createError.NotFound();
     res.status(200).send(order);
   } catch (e) {
@@ -51,3 +53,6 @@ exports.addOrder = async (req, res, next) => {
     next(e);
   }
 };
+
+// WHAT DOES THE POPULATE DO?
+// Answer => https://stackoverflow.com/questions/38051977/what-does-populate-in-mongoose-mean
