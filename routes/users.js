@@ -4,6 +4,9 @@ const {
   userValidationRules,
   userValidationErrorHandling
 } = require("../validators/validator");
+
+const auth=require('../middleware/authenticator')
+
 const {
   getUsers,
   addUser,
@@ -15,15 +18,15 @@ const {
 
 router
   .route("/")
-  .get(getUsers)
+  .get(auth, getUsers)
   .post(userValidationRules(), userValidationErrorHandling, addUser);
 
-router.route("/me").get(authenticateUser);
+router.route("/me").get(auth, authenticateUser);
 
 router
   .route("/:id")
-  .get(getUser)
-  .delete(deleteUser)
-  .put(userValidationRules(), userValidationErrorHandling, updateUser);
+  .get(auth, getUser)
+  .delete(auth, deleteUser)
+  .put(auth, updateUser);  
 
 module.exports = router;

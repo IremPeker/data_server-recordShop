@@ -13,7 +13,7 @@ const recordsRouter = require("./routes/records");
 const ordersRouter = require("./routes/orders");
 
 // Our Middleware
-// Middleware functions are the functions that run every time
+// Middleware functions are the functions that run every time a request is made
 const { setCors } = require("./middleware/security");
 
 // Init the server

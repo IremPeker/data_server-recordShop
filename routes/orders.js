@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const {
   getOrders,
@@ -6,17 +6,18 @@ const {
   getOrder,
   deleteOrder,
   updateOrder
-} = require("../controllers/ordersController");
+} = require('../controllers/ordersController');
+const auth = require('../middleware/authenticator');
 
 router
-  .route("/")
-  .get(getOrders)
-  .post(addOrder);
+  .route('/')
+  .get(auth, getOrders)
+  .post(auth, addOrder);
 
 router
-  .route("/:id")
-  .get(getOrder)
-  .delete(deleteOrder)
-  .put(updateOrder);
+  .route('/:id')
+  .get(auth, getOrder)
+  .delete(auth, deleteOrder)
+  .put(auth, updateOrder);
 
 module.exports = router;

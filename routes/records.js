@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const {
   getRecords,
@@ -6,17 +6,18 @@ const {
   getRecord,
   deleteRecord,
   updateRecord
-} = require("../controllers/recordsController");
+} = require('../controllers/recordsController');
+const auth = require('../middleware/authenticator');
 
 router
-  .route("/")
+  .route('/')
   .get(getRecords)
-  .post(addRecord);
+  .post(auth, addRecord);
 
 router
-  .route("/:id")
+  .route('/:id')
   .get(getRecord)
-  .delete(deleteRecord)
-  .put(updateRecord);
+  .delete(auth, deleteRecord)
+  .put(auth, updateRecord);
 
 module.exports = router;

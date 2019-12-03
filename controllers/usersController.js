@@ -7,11 +7,10 @@ exports.getUsers = async (req, res, next) => {
   // const users = db.get("users").value();
   try {
     const users = await User.find()
-      .select("-password -_v")
-      .sort("-lastName")
-      .limit(5);
-    // if you select like this, then the user doesnt see the password and the version
-    // you can sort the items
+      .select('-password -__v -tokens._id')
+      .sort("-lastName");
+    // if you select like this .select("-password -_v"), then the user doesnt see the password and the version
+    // you can sort the items .sort("-lastName");
     // you can choose a limit per page
     res.status(200).send(users);
   } catch (e) {
@@ -25,7 +24,7 @@ exports.getUsers = async (req, res, next) => {
 exports.getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(id).select("-password -_v");
     if (!user) throw new createError.NotFound();
     res.status(200).send(user);
   } catch (e) {
@@ -62,23 +61,17 @@ exports.addUser = async (req, res, next) => {
     const user = new User(req.body);
     const token = user.generateAuthToken();
     await user.save();
+    const data = user.getPublicFields();
     res
       .status(200)
-      .header("x-auth", token) // token is stored in the database and returned as a header
-      .send(user); // to add custom headers there are some convention rules (for example it has to start with x)
+      .header("x-auth", token) // token is stored in the database (session storage) and returned as a header
+      .send(user); // to add custom headers there are some convention rules (for example it has to start with x, like x-auth)
   } catch (e) {
     next(e);
   }
 };
 
 exports.authenticateUser = async (req, res, next) => {
-  try {
-     const token = req.header("x-auth");
-  const user = await User.findByToken(token);
-  if(!user) throw new createError.NotFound();
-   res.status(200).send(user); 
-  } catch (e) {
-     next(e);
-  }
+  res.status(200).send(req.user);
  
 };

@@ -6,24 +6,24 @@ const Order = require('../models/Order');
 
 (async function() {
   /** CONNECT TO MONGO */
-  mongoose.connect("mongodb://localhost:27017/live-coding-ds", {
+  mongoose.connect('mongodb://localhost:27017/live-coding-ds', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
   });
 
   mongoose.connection.on(
-    "error",
-    console.error.bind(console, "connection error:")
+    'error',
+    console.error.bind(console, 'connection error:')
   );
 
-  mongoose.connection.on("open", () => {
+  mongoose.connection.on('open', () => {
     console.log(`Connected to the database...`);
   });
 
   console.log(`First, i will delete all the old users`);
 
-/** DELETE ALL USERS */
+  /** DELETE ALL USERS */
   try {
     await User.deleteMany({});
     console.log('Old users moved to a better place. Spandau');
@@ -46,12 +46,9 @@ const Order = require('../models/Order');
   } catch (e) {
     console.log(e);
   }
-
-
   console.log(`I am creating 20 fake users`);
 
-
-//*CREATE 20 FAKE USERS*//
+  /** CREATE 20 FAKE USERS */
   const userPromises = Array(20)
     .fill(null)
     .map(() => {
@@ -68,6 +65,7 @@ const Order = require('../models/Order');
         }
       });
 
+      const token = user.generateAuthToken();
       return user.save();
     });
 
@@ -78,17 +76,16 @@ const Order = require('../models/Order');
     console.log(e);
   }
 
-
   console.log(`I am creating 20 fake records`);
-  
-//*CREATE 20 FAKE RECORDS*//
+
+  /** CREATE 20 FAKE RECORDS */
   const recordPromises = Array(20)
     .fill(null)
     .map(() => {
       const record = new Record({
         title: faker.random.words(),
         artist: faker.internet.userName(),
-        year: new Date(faker.date.past()).getFullYear(), // we changed it like that in order to see the year (not the miliseconds)
+        year: new Date(faker.date.past()).getFullYear(),
         price: faker.finance.amount()
       });
 
@@ -104,7 +101,5 @@ const Order = require('../models/Order');
 
   mongoose.connection.close();
 })();
-
-
 // after running npm run seed on terminal, it will delete all the users first and then create 20 new users 
 

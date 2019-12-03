@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const UserSchema = new Schema(
   {
+    id: false,
     firstName: {
       type: String,
       required: true
@@ -36,6 +37,7 @@ const UserSchema = new Schema(
     },
     tokens: [
       {
+        _id: false,
         access: {
           type: String,
           required: true
@@ -72,11 +74,24 @@ UserSchema.methods.generateAuthToken = function() {
   return token;
 };
 
+UserSchema.methods.getPublicFields = function() {
+  return{
+    _id:this._id,
+    firstName:this.firstName,
+    lastName:this.lastName,
+    email:this.email,
+    fullName:this.fullName,
+    birthday: new Date(this.birthday),
+    address:this.address
+  };
+};
+
+
 UserSchema.statics.findByToken = function(token) {
   const User = this; // in this case this refers to the model/schema itself // static methods are applied to the database
   let decoded;
   try {
-    decoded= jwt.verify(token, "babylon");
+    decoded= jwt.verify(token, "babylon");  // babylon is a secret key to create the token and you should never share the secret keys in github
   } catch (err) {
     return;
   }
