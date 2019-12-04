@@ -64,11 +64,34 @@ exports.addUser = async (req, res, next) => {
     const data = user.getPublicFields();
     res
       .status(200)
-      .header("x-auth", token) // token is stored in the database (session storage) and returned as a header
+      .header("x-auth", token) // token is returned as a header
       .send(user); // to add custom headers there are some convention rules (for example it has to start with x, like x-auth)
   } catch (e) {
     next(e);
   }
+};
+
+// users/:login
+
+exports.loginUser=async(req,res,next)=>{
+
+// Get email and pass from the body
+const email=req.body.email;
+const password=req.body.password;
+try {
+  // Get the user by email
+  const user=await User.findOne({email});
+  const token = user.generateAuthToken();
+// Access user.password (hashed password)
+// Write a method that takes in user.password and password
+const canLogin=await user.checkPassword(password); // user.password is the hashed password
+if(!canLogin) throw new createError.NotFound();
+ const data = user.getPublicFields();
+ res.status(200).header('x-auth',token).send(data);
+} catch (e) {
+  next(e);
+}
+
 };
 
 exports.authenticateUser = async (req, res, next) => {
