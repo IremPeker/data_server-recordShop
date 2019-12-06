@@ -1,0 +1,6 @@
+{
+  "name": "record_shop_exercise",
+  "builds": [{ "src": "app.js", "use": "@now/node" }],
+  "version": 2,
+  "routes": [{ "src": "/(.*)", "dest": "app.js" }]
+}

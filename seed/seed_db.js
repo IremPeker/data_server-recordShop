@@ -1,23 +1,23 @@
-const mongoose = require('mongoose');
-const faker = require('faker');
-const User = require('../models/User');
-const Record = require('../models/Record');
-const Order = require('../models/Order');
+const mongoose = require("mongoose");
+const faker = require("faker");
+const User = require("../models/User");
+const Record = require("../models/Record");
+const Order = require("../models/Order");
 
 (async function() {
   /** CONNECT TO MONGO */
-  mongoose.connect('mongodb://localhost:27017/live-coding-ds', {
+  mongoose.connect("mongodb://localhost:27017/live-coding-ds", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
   });
 
   mongoose.connection.on(
-    'error',
-    console.error.bind(console, 'connection error:')
+    "error",
+    console.error.bind(console, "connection error:")
   );
 
-  mongoose.connection.on('open', () => {
+  mongoose.connection.on("open", () => {
     console.log(`Connected to the database...`);
   });
 
@@ -26,7 +26,7 @@ const Order = require('../models/Order');
   /** DELETE ALL USERS */
   try {
     await User.deleteMany({});
-    console.log('Old users moved to a better place. Spandau');
+    console.log("Old users moved to a better place. Spandau");
   } catch (e) {
     console.log(e);
   }
@@ -34,7 +34,7 @@ const Order = require('../models/Order');
   /** DELETE ALL RECORDS */
   try {
     await Record.deleteMany({});
-    console.log('Old records moved to a better place. Spandau');
+    console.log("Old records moved to a better place. Spandau");
   } catch (e) {
     console.log(e);
   }
@@ -42,7 +42,7 @@ const Order = require('../models/Order');
   /** DELETE ALL ORDERS */
   try {
     await Order.deleteMany({});
-    console.log('Old orders moved to a better place. Spandau');
+    console.log("Old orders moved to a better place. Spandau");
   } catch (e) {
     console.log(e);
   }
@@ -59,6 +59,7 @@ const Order = require('../models/Order');
         password: faker.internet.password(),
         birthday: faker.date.past(),
         userName: faker.internet.userName(),
+        role: faker.random.arrayElement(["Admin", "User"]),
         address: {
           city: faker.address.city(),
           street: faker.address.streetName()
@@ -71,7 +72,7 @@ const Order = require('../models/Order');
 
   try {
     await Promise.all(userPromises);
-    console.log('Users stored in the database!');
+    console.log("Users stored in the database!");
   } catch (e) {
     console.log(e);
   }
@@ -94,12 +95,11 @@ const Order = require('../models/Order');
 
   try {
     await Promise.all(recordPromises);
-    console.log('Records stored in the database!');
+    console.log("Records stored in the database!");
   } catch (e) {
     console.log(e);
   }
 
   mongoose.connection.close();
 })();
-// after running npm run seed on terminal, it will delete all the users first and then create 20 new users 
-
+// after running npm run seed on terminal, it will delete all the users first and then create 20 new users

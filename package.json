@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "DEBUG=record_shop_exercise:* nodemon --inspect ./bin/www --ignore 'data/*' ",
-    "seed": "node seed/seed_db.js"
+    "start": "DEBUG=record_shop_exercise:* nodemon --inspect ./bin/www",
+    "seed": "node seed/seed_db.js",
+    "remote": "NODE_ENV=production DEBUG=record_shop_exercise:* nodemon --inspect ./bin/www",
+    "build": "node build --output public"
   },
   "dependencies": {
     "bcrypt": "^3.0.7",

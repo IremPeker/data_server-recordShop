@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   getRecords,
@@ -6,18 +6,19 @@ const {
   getRecord,
   deleteRecord,
   updateRecord
-} = require('../controllers/recordsController');
-const auth = require('../middleware/authenticator');
+} = require("../controllers/recordsController");
+const auth = require("../middleware/authenticator");
+const isAdmin = require("../middleware/rolesAuthenticator");
 
 router
-  .route('/')
+  .route("/")
   .get(getRecords)
-  .post(auth, addRecord);
+  .post(auth, isAdmin, addRecord);
 
 router
-  .route('/:id')
+  .route("/:id")
   .get(getRecord)
-  .delete(auth, deleteRecord)
-  .put(auth, updateRecord);
+  .delete(auth, isAdmin, deleteRecord)
+  .put(auth, isAdmin, updateRecord);
 
 module.exports = router;

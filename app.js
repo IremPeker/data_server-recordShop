@@ -15,6 +15,7 @@ const ordersRouter = require("./routes/orders");
 // Our Middleware
 // Middleware functions are the functions that run every time a request is made
 const { setCors } = require("./middleware/security");
+const env = require("./config/config");
 
 // Init the server
 const app = express();
@@ -24,7 +25,7 @@ const app = express();
 app.use(logger("dev"));
 
 // Connect To MONGO
-mongoose.connect("mongodb://localhost:27017/live-coding-ds", {
+mongoose.connect(env.db, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true

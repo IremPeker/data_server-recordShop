@@ -7,7 +7,7 @@ exports.getUsers = async (req, res, next) => {
   // const users = db.get("users").value();
   try {
     const users = await User.find()
-      .select('-password -__v -tokens._id')
+      .select("-password -__v -tokens._id")
       .sort("-lastName");
     // if you select like this .select("-password -_v"), then the user doesnt see the password and the version
     // you can sort the items .sort("-lastName");
@@ -34,6 +34,7 @@ exports.getUser = async (req, res, next) => {
 
 exports.deleteUser = async (req, res, next) => {
   try {
+    // What happens if an admin wants to delete a users acount?
     const user = await User.findByIdAndDelete(req.params.id); // if the user is found, delete
     if (!user) throw new createError.NotFound(); // if the user is not found show an error
     res.status(200).send(user);
@@ -62,10 +63,11 @@ exports.addUser = async (req, res, next) => {
     const token = user.generateAuthToken();
     await user.save();
     const data = user.getPublicFields();
+
     res
       .status(200)
       .header("x-auth", token) // token is returned as a header
-      .send(user); // to add custom headers there are some convention rules (for example it has to start with x, like x-auth)
+      .send(data); // to add custom headers there are some convention rules (for example it has to start with x, like x-auth)
   } catch (e) {
     next(e);
   }
@@ -73,28 +75,28 @@ exports.addUser = async (req, res, next) => {
 
 // users/:login
 
-exports.loginUser=async(req,res,next)=>{
-
-// Get email and pass from the body
-const email=req.body.email;
-const password=req.body.password;
-try {
-  // Get the user by email
-  const user=await User.findOne({email});
-  const token = user.generateAuthToken();
-// Access user.password (hashed password)
-// Write a method that takes in user.password and password
-const canLogin=await user.checkPassword(password); // user.password is the hashed password
-if(!canLogin) throw new createError.NotFound();
- const data = user.getPublicFields();
- res.status(200).header('x-auth',token).send(data);
-} catch (e) {
-  next(e);
-}
-
+exports.loginUser = async (req, res, next) => {
+  // Get email and pass from the body
+  const email = req.body.email;
+  const password = req.body.password;
+  try {
+    // Get the user by email
+    const user = await User.findOne({ email });
+    const token = user.generateAuthToken();
+    // Access user.password (hashed password)
+    // Write a method that takes in user.password and password
+    const canLogin = await user.checkPassword(password); // user.password is the hashed password
+    if (!canLogin) throw new createError.NotFound();
+    const data = user.getPublicFields();
+    res
+      .status(200)
+      .header("x-auth", token)
+      .send(data);
+  } catch (e) {
+    next(e);
+  }
 };
 
 exports.authenticateUser = async (req, res, next) => {
   res.status(200).send(req.user);
- 
 };
