@@ -66,7 +66,11 @@ exports.addUser = async (req, res, next) => {
 
     res
       .status(200)
-      .header("x-auth", token) // token is returned as a header
+      .cookie("token", token, {
+        expires: new Date(Date.now() + 604800000),
+        secure: false, // if we are not using https
+        httpOnly: true
+      }) //.header("x-auth", token) // token is returned as a header
       .send(data); // to add custom headers there are some convention rules (for example it has to start with x, like x-auth)
   } catch (e) {
     next(e);
@@ -90,7 +94,11 @@ exports.loginUser = async (req, res, next) => {
     const data = user.getPublicFields();
     res
       .status(200)
-      .header("x-auth", token)
+      .cookie("token", token, {
+        expires: new Date(Date.now() + 604800000),
+        secure: false, // if we are not using https
+        httpOnly: true
+      }) //.header("x-auth", token)
       .send(data);
   } catch (e) {
     next(e);

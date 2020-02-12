@@ -12,7 +12,7 @@ const isAdmin = require("../middleware/rolesAuthenticator");
 
 router
   .route("/")
-  .get(getRecords)
+  .get(auth, getRecords)
   .post(auth, isAdmin, addRecord);
 
 router

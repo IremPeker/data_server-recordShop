@@ -14,8 +14,9 @@ const ordersRouter = require("./routes/orders");
 
 // Our Middleware
 // Middleware functions are the functions that run every time a request is made
-const { setCors } = require("./middleware/security");
+//const { setCors } = require("./middleware/security");
 const env = require("./config/config");
+const cors = require("cors");
 
 // Init the server
 const app = express();
@@ -28,7 +29,8 @@ app.use(logger("dev"));
 mongoose.connect(env.db, {
   useNewUrlParser: true,
   useCreateIndex: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false
 });
 mongoose.connection.on(
   "error",
@@ -42,7 +44,13 @@ mongoose.connection.on("open", () => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(setCors); // this one is inside the security.js file
+// server.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3001"],
+    credentials: true
+  })
+);
 
 // Static Files
 app.use(express.static(path.join(__dirname, "public")));
